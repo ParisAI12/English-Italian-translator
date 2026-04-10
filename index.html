@@ -1,86 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>English ↔ Italian Translator</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
       margin: 0;
-      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #e9eef3;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
+      align-items: center;
+      height: 100vh;
     }
-    .container {
-      background: #fff;
-      margin-top: 40px;
-      padding: 25px;
-      border-radius: 10px;
+
+    .translator-box {
       width: 90%;
-      max-width: 600px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      max-width: 900px;
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+      overflow: hidden;
+      display: flex;
     }
-    h1 {
-      text-align: center;
-      margin-top: 0;
+
+    .panel {
+      flex: 1;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
     }
-    label {
-      font-weight: bold;
-      margin-top: 15px;
-      display: block;
+
+    .panel h2 {
+      margin: 0 0 10px;
+      font-size: 1.2rem;
+      color: #333;
     }
-    select, textarea, button {
+
+    textarea {
+      flex: 1;
       width: 100%;
-      padding: 10px;
-      margin-top: 8px;
-      border-radius: 6px;
+      padding: 12px;
+      border-radius: 8px;
       border: 1px solid #ccc;
+      resize: none;
       font-size: 1rem;
       box-sizing: border-box;
     }
+
+    .controls {
+      background: #f7f9fb;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      border-left: 1px solid #ddd;
+      border-right: 1px solid #ddd;
+    }
+
+    select {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
     button {
-      background: #2563eb;
+      padding: 12px 20px;
+      background: #1a73e8;
       color: white;
       border: none;
+      border-radius: 8px;
+      font-size: 1rem;
       cursor: pointer;
-      margin-top: 20px;
-      font-weight: bold;
+      width: 140px;
     }
+
     button:hover {
-      background: #1d4ed8;
-    }
-    #output {
-      background: #f9fafb;
-      border: 1px solid #ddd;
-      padding: 12px;
-      border-radius: 6px;
-      min-height: 80px;
-      margin-top: 10px;
-      white-space: pre-wrap;
+      background: #1664c4;
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <h1>English ↔ Italian Translator</h1>
+  <div class="translator-box">
 
-    <label for="direction">Translation Direction</label>
-    <select id="direction">
-      <option value="en-it">English → Italian</option>
-      <option value="it-en">Italian → English</option>
-    </select>
+    <!-- Left Panel -->
+    <div class="panel">
+      <h2>Input</h2>
+      <textarea id="inputText" placeholder="Type text here..."></textarea>
+    </div>
 
-    <label for="inputText">Enter Text</label>
-    <textarea id="inputText" placeholder="Type something..."></textarea>
+    <!-- Middle Controls -->
+    <div class="controls">
+      <select id="direction">
+        <option value="en-it">English → Italian</option>
+        <option value="it-en">Italian → English</option>
+      </select>
 
-    <button onclick="translateText()">Translate</button>
+      <button onclick="translateText()">Translate</button>
+    </div>
 
-    <label>Translation</label>
-    <div id="output"></div>
+    <!-- Right Panel -->
+    <div class="panel">
+      <h2>Output</h2>
+      <textarea id="outputText" readonly></textarea>
+    </div>
+
   </div>
 
   <script>
@@ -90,11 +118,11 @@
       const [source, target] = direction.split("-");
 
       if (!text) {
-        document.getElementById("output").textContent = "";
+        document.getElementById("outputText").value = "";
         return;
       }
 
-      document.getElementById("output").textContent = "Translating...";
+      document.getElementById("outputText").value = "Translating...";
 
       try {
         const response = await fetch("https://libretranslate.com/translate", {
@@ -109,9 +137,10 @@
         });
 
         const data = await response.json();
-        document.getElementById("output").textContent = data.translatedText;
+        document.getElementById("outputText").value = data.translatedText;
+
       } catch (error) {
-        document.getElementById("output").textContent =
+        document.getElementById("outputText").value =
           "Error: Could not reach translation server.";
       }
     }
